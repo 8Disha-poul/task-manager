@@ -38,17 +38,21 @@ app = Flask(__name__)
 CORS(app)
 
 # Get values from .env
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("DB_NAME")
-SECRET_KEY = os.getenv("SECRET_KEY") or "super-secret-key"  # fallback
+
+
+MYSQLHOST = os.getenv("MYSQLHOST")
+MYSQLUSER = os.getenv("MYSQLUSER")
+MYSQLPASSWORD = os.getenv("MYSQLPASSWORD")
+MYSQLDATABASE = os.getenv("MYSQLDATABASE")
+MYSQLPORT = os.getenv("MYSQLPORT")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+DATABASE_URL = (
+    f"mysql+pymysql://{MYSQLUSER}:{MYSQLPASSWORD}"
+    f"@{MYSQLHOST}:{MYSQLPORT}/{MYSQLDATABASE}"
+) # fallback
 
 # Configure Database
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # JWT Config
@@ -69,4 +73,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
