@@ -1,5 +1,5 @@
 # this is a backend requirments need when run
-pip install flask-jwt-extended
+flask-jwt-extended
 python-dotenv
 Flask
 Flask-SQLAlchemy
