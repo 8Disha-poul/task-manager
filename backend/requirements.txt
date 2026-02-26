@@ -7,3 +7,4 @@ SQLAlchemy
 PyMySQL
 flask-cors
 flask_bcrypt
+cryptography
