@@ -40,17 +40,14 @@ CORS(app)
 # Get values from .env
 
 
-MYSQLHOST = os.getenv("MYSQLHOST")
-MYSQLUSER = os.getenv("MYSQLUSER")
-MYSQLPASSWORD = os.getenv("MYSQLPASSWORD")
-MYSQLDATABASE = os.getenv("MYSQLDATABASE")
-MYSQLPORT = os.getenv("MYSQLPORT")
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-DATABASE_URL = (
-    f"mysql+pymysql://{MYSQLUSER}:{MYSQLPASSWORD}"
-    f"@{MYSQLHOST}:{MYSQLPORT}/{MYSQLDATABASE}"
-) # fallback
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL and DATABASE_URL.startswith("mysql://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "mysql://", "mysql+pymysql://", 1
+    )
 # Configure Database
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -68,6 +65,7 @@ jwt = JWTManager(app)  # <-- MUST add this
 app.register_blueprint(task_bp)
 app.register_blueprint(user_bp, url_prefix="/api/users")
 
+import models
 # Create tables
 with app.app_context():
     db.create_all()
